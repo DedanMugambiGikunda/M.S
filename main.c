@@ -41,6 +41,8 @@ void viewbooks(void);
 void issuebooks(void);
 void editbooks(void);
 void issuerecord(void);
+void students(void);
+void viewstudentbooks(void);
 int  getdata();
 
 /******************************************* GLOBAL VARIABLES ****************************************************/
@@ -1391,3 +1393,315 @@ int checkid(int t)
     return 0;
     return 1;
 }
+void students(void){
+	int j,d;
+	system("cls");
+	printBox();
+	gotoxy(70,10);
+	printf("\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB NED LIBRARY \xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB\xDB");
+	gotoxy(70,11);
+	printf("1.ISSUE A BOOK ");
+	gotoxy(70,12);
+	printf("2.VIEW AVAILABLE BOOKS");
+	gotoxy(70,13);
+	printf("3.EXIT");
+	gotoxy(70,14);
+	printf("Enter your choice : ");
+	scanf("%d",&j);
+	switch(j){
+		case 1:
+		{
+		 system("cls");
+         int c=0;
+         char another='y';
+         while(another=='y')
+        {
+         system("cls");
+         printBox();
+         gotoxy(73,10);
+         printf("ISSUE BOOK SECTION");
+         gotoxy(68,12);
+         printf("Enter the Book Id:");
+         scanf("%d",&d);
+         fp=fopen("Project.dat","rb");
+         fs=fopen("Issue.dat","ab+");
+         if(checkid(d)==0)
+         {
+          gotoxy(68,14);
+          printf("The book record is available");
+          gotoxy(68,15);
+          printf("There are %d unissued books in library ",x.quantity);
+          gotoxy(68,16);
+          printf("The name of book is %s",x.name);
+          gotoxy(68,17);
+          fflush(stdin);
+		  printf("Enter student name:");
+          scanf("%s",x.name);
+          fflush(stdin);
+          gotoxy(68,18);
+		  printf("Enter date in format(dd/mm/yy) :");
+          scanf("%d/%d/%d",&x.issuedate.dd,&x.issuedate.mm,&x.issuedate.yy);
+          gotoxy(68,19);
+          printf("Issued date=%d-%d-%d",x.issuedate.dd,x.issuedate.mm,x.issuedate.yy);
+          gotoxy(68,20);
+          printf("The BOOK of ID %d is issuedate",x.id);
+                 x.duedate.dd=x.issuedate.dd+RETURNTIME;
+                 x.duedate.mm=x.issuedate.mm;
+                 x.duedate.yy=x.issuedate.yy;
+                 if(x.duedate.dd>30)
+                 {
+                 x.duedate.mm+=x.duedate.dd/30;
+                 x.duedate.dd-=30;
+
+                 }
+                 if(x.duedate.mm>12)
+                 {
+                  x.duedate.yy+=x.duedate.mm/12;
+                  x.duedate.mm-=12;
+
+                 }
+                 gotoxy(68,21);
+                 printf("To be return:%d-%d-%d",x.duedate.dd,x.duedate.mm,x.duedate.yy);
+                 fseek(fs,sizeof(x),SEEK_END);
+                 fwrite(&x,sizeof(x),1,fs);
+                 fclose(fs);
+                 c=1;
+            }
+            if(c==0)
+            {
+            gotoxy(68,16);
+            printf("No record found");
+            }
+            gotoxy(68,23);
+            printf("Issue any more(Y/N):");
+            fflush(stdin);
+            another=getche();
+            fclose(fp);
+		}
+		students();
+		break;
+	}
+	case 2:
+    {
+    	char c;
+    	viewstudentbooks();
+	    getch();
+		students();
+		break;
+	}
+	case 3:
+	{
+		goodbye(13,4);
+		break;
+	}
+	default:
+    {
+        gotoxy(70,16);
+        printf("\aWrong Entry!!Please re-entered correct option");
+        getch();
+        students();
+    }
+}
+}
+void viewstudentbooks(void){
+	system("cls");
+	int i=0,j;
+    gotoxy(1,1);
+    printf("*********************************Book List*****************************");
+    gotoxy(2,2);
+    printf(" CATEGORY     ID     BOOK NAME       AUTHOR         QTY      PRICE      RackNo ");
+    j=4;
+    fp=fopen("Project.dat","rb");
+    while(fread(&x,sizeof(x),1,fp)>0)
+    {
+    gotoxy(3,j);
+    fflush(stdin);
+    printf("%s",x.cat);
+    gotoxy(16,j);
+    fflush(stdin);
+    printf("%d",x.id);
+    gotoxy(23,j);
+    fflush(stdin);
+    printf("%s",x.bookname);
+    gotoxy(39,j);
+    fflush(stdin);
+    printf("%s",x.author);
+    gotoxy(54,j);
+    fflush(stdin);
+    printf("%d",x.quantity);
+    gotoxy(62,j);
+    fflush(stdin);
+    printf("%.2f",x.price);
+    gotoxy(73,j);
+    fflush(stdin);
+    printf("%d",x.rackno);
+    printf("\n\n");
+    j++;
+    i=i+x.quantity;
+      }
+      gotoxy(3,25);
+      printf("Total Books =%d",i);
+      fclose(fp);
+      gotoxy(35,25);
+      printf("\nPress any key to return to main menu");
+      getch();
+      students();
+}
+void goodbye(int x,int y){
+	clearArea(1,1,170,29);
+	int i;
+	int a = x+6;
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a,y); printf("    * * * * *");
+				break;
+			case 2:
+				gotoxy(a,y+1); printf("       *    ");
+				break;
+			case 3:
+				gotoxy(a,y+2); printf("      *    ");
+				break;
+			case 4:
+				gotoxy(a,y+3); printf("     *    ");
+				break;
+			case 5:
+				gotoxy(a,y+4); printf("    *    ");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+13,y); printf("   *       *");
+				break;
+			case 2:
+				gotoxy(a+12,y+1); printf("   *       *");
+				break;
+			case 3:
+				gotoxy(a+12,y+2); printf("  * * * * *");
+				break;
+			case 4:
+				gotoxy(a+12,y+3); printf(" *       *");
+				break;
+			case 5:
+				gotoxy(a+12,y+4); printf("*       *");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+25,y); printf("   * * * * *");
+				break;
+			case 2:
+				gotoxy(a+24,y+1); printf("   *       *");
+				break;
+			case 3:
+				gotoxy(a+24,y+2); printf("  * * * * *");
+				break;
+			case 4:
+				gotoxy(a+24,y+3); printf(" *       *");
+				break;
+			case 5:
+				gotoxy(a+24,y+4); printf("*       *");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+37,y); printf("   *       *");
+				break;
+			case 2:
+				gotoxy(a+36,y+1); printf("   * *     *");
+				break;
+			case 3:
+				gotoxy(a+36,y+2); printf("  *   *   *");
+				break;
+			case 4:
+				gotoxy(a+36,y+3); printf(" *     * *");
+				break;
+			case 5:
+				gotoxy(a+36,y+4); printf("*       *");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+49,y); printf("   *       *");
+				break;
+			case 2:
+				gotoxy(a+48,y+1); printf("   *     *  ");
+				break;
+			case 3:
+				gotoxy(a+48,y+2); printf("  * * *");
+				break;
+			case 4:
+				gotoxy(a+48,y+3); printf(" *     *  ");
+				break;
+			case 5:
+				gotoxy(a+48,y+4); printf("*       *");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+64,y); printf("   *       *");
+				break;
+			case 2:
+				gotoxy(a+63,y+1); printf("     *   *  ");
+				break;
+			case 3:
+				gotoxy(a+63,y+2); printf("      *    ");
+				break;
+			case 4:
+				gotoxy(a+63,y+3); printf("     *    ");
+				break;
+			case 5:
+				gotoxy(a+63,y+4); printf("    *    ");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+76,y); printf("   * * * * *");
+				break;
+			case 2:
+				gotoxy(a+75,y+1); printf("   *       *");
+				break;
+			case 3:
+				gotoxy(a+75,y+2); printf("  *       *");
+				break;
+			case 4:
+				gotoxy(a+75,y+3); printf(" *       *");
+				break;
+			case 5:
+				gotoxy(a+75,y+4); printf("* * * * *");
+				break;
+		}
+	}
+	for (i = 1; i <= 5; i++){
+		switch(i){
+			case 1:
+				gotoxy(a+88,y); printf("   *       *");
+				break;
+			case 2:
+				gotoxy(a+87,y+1); printf("   *       *");
+				break;
+			case 3:
+				gotoxy(a+87,y+2); printf("  *       *");
+				break;
+			case 4:
+				gotoxy(a+87,y+3); printf(" *       *");
+				break;
+			case 5:
+				gotoxy(a+87,y+4); printf("    *    ");
+				break;
+		}
+	}
+}
+
